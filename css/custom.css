@@ -1,0 +1,66 @@
+/* .custom {
+  margin-bottom: -15px;
+}
+
+.custom .custom-item {
+  position: relative;
+  display: block;
+  max-width: 25rem;
+  margin-bottom: 15px;
+}
+
+.custom .custom-item .custom-item-caption {
+  -webkit-transition: all ease 0.5s;
+  transition: all ease 0.5s;
+  opacity: 0;
+  background-color: #6E6E6E;
+}
+
+.custom .custom-item .custom-item-caption:hover {
+  opacity: 1;
+}
+
+.custom .custom-item .custom-item-caption .custom-item-caption-content {
+  font-size: 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .custom {
+    margin-bottom: -30px;
+  }
+
+  .custom .custom-item {
+    margin-bottom: 30px;
+  }
+}
+ */
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+#img-upload {
+  width: 100%;
+}
+
+.card-img-top{
+  width:100%;
+  height:auto;
+  object-fit: cover;
+}
