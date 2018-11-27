@@ -285,10 +285,8 @@ if ($textrows2 == 0) {
                             <div class="form-group">
                                 <label for="senha">Senha</label>
                                 <input type="password" class="form-control" id="senha" name="senha"  aria-describedby="loginHelp" placeholder="Digite uma senha"
-                                    onkeyup='check();' pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required title="Sua senha deve ter no mínimo 8 caracteres, pelo menos uma letra maiúscula e minúscula, além de no mínimo um número!">
-                                <small id="loginHelp" class="form-text text-muted">Sua senha deve ter no mínimo 8
-                                    caracteres, pelo menos uma letra maiúscula e minúscula, além de no mínimo um
-                                    número!</small>
+                                    onkeyup='check();' pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required title="Sua senha deve ter no mínimo 8 caracteres, pelo menos uma letra maiúscula e minúscula, além de no mínimo um número!"
+                                    data-toggle="tooltip" data-placement="top">
                                 <br>
                                 <input type="password" class="form-control" id="repete" name="repete" placeholder="Digite a senha novamente"
                                     onkeyup='check();' pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required title="Sua senha deve ter no mínimo 8 caracteres, pelo menos uma letra maiúscula e minúscula, além de no mínimo um número!">
