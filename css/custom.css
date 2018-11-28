@@ -64,3 +64,8 @@
   height:auto;
   object-fit: cover;
 }
+
+.mod{
+  min-width:60px;
+  text-align:right;
+}

@@ -10,6 +10,7 @@ if (isset($_GET['id'])) {
 } else {
     header("Location: user");
 }
+
 ?>
 
 <head>
@@ -40,8 +41,9 @@ if (isset($_GET['id'])) {
 </head>
 
 <body id="page-top">
-    <?php include "code/connection.php";
-require "code/validation.php";
+    <?php   include "code/connection.php";
+            include "code/functions.php";
+            require "code/validation.php";
 
 ?>
 
@@ -89,7 +91,7 @@ if ($count == 0) {
                             <div class="card mt-4">
                                 <img class="card-img-top img-fluid" src="img/personagem/<?php echo $row['imagem'] ?>" alt="Imagem do personagem">
                                 <div class="card-body">
-                                    <h3 class="card-title"><?php echo $row['nome'] ?>, <?php echo $row['id_subclasse'] ?> <?php echo $row['id_raca']; ?></h3>
+                                    <h3 class="card-title"><?php echo $row['nome'] ?>, <?php echo $row['id_subclasse'] ?> <?php echo $row['id_raca']; ?> (Nível <?php echo $row['id_nivel']; ?> )</h3>
                                     <hr>
                                     <h4>HP: <?php echo $row['hp'] ?>/<?php echo $row['maxhp'] ?></h4>
                                     <p class="card-text">Ferimentos: 0/<?php echo $row['ferimentos'] ?></p>
@@ -99,31 +101,34 @@ if ($count == 0) {
                                     <button type="button" data-target="#editar-modal" data-toggle="modal" class="btn btn-secondary">Editar</button>
                                 </div>
                             </div>
-         <?php
-}
-}
-?>
-                    <!-- /.card -->
-                    <div class="card card-outline-secondary my-4">
-                        <div class="card-header">
-                            Atributos
-                        </div>
-                        <!-- MODAL -->
+                            <!-- MODAL -->
                         <div class="modal" tabindex="-1" role="dialog" id="editar-modal">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <form action="atributo" method="POST">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Atributos</h5>
+                                            <h5 class="modal-title">Personagem</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <input type="text" class="form-control" id="atributo" name="atributo">
-                                            <input type="text" class="form-control" id="forca" name="forca">
-                                            <input type="text" class="form-control" id="destreza" name="destreza">
-                                            <input type="text" class="form-control" id="vitalidade" name="vitalidade">
+                                            <div class="form-group form-inline">
+                                                <label for="hp" class="col-xs-4 col-md-4 col-form-label mb-3">Pontos de Vida:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="hp" name="hp" value="<?php echo $row['hp'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="ferimentos" class="col-xs-4 col-md-4 col-form-label mb-3">Ferimentos:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="ferimentos" name="ferimentos" value="<?php echo $row['ferimentos'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="exaustao" class="col-xs-4 col-md-4 col-form-label mb-3">Exaustão:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="exaustao" name="exaustao" value="<?php echo $row['exaustao'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-3">Nível:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['id_nivel'] ?>">
+                                            </div>
                                             <input type="hidden" class="form-control" id="charid" name="charid" value="<?php echo $charid ?>">
                                             <input type="hidden" class="form-control" id="userId" name="userId" value="<?php echo $userId ?>">
                                         </div>
@@ -136,6 +141,15 @@ if ($count == 0) {
                             </div>
                         </div>
                         <!-- MODAL -->
+         <?php
+}
+}
+?>
+                    <!-- /.card -->
+                    <div class="card card-outline-secondary my-4">
+                        <div class="card-header">
+                            Atributos
+                        </div>
                         <div class="card-body">
                             <?php
 $query2 = mysqli_query($connection, "SELECT atributos.forca AS forca, atributos.destreza AS destreza, atributos.vitalidade AS vitalidade, atributos.inteligencia AS inteligencia, atributos.sabedoria AS sabedoria, atributos.determinacao AS determinacao, atributos.personalidade AS personalidade, atributos.labia AS labia, atributos.compostura AS compostura FROM atributos "
@@ -146,21 +160,127 @@ if ($count2 == 0) {
 } else {
     while ($row = mysqli_fetch_array($query2)) {
         ?>
-                                    <p>Força: <?php echo $row['forca'] ?> (5)</p>
-                                    <p>Destreza: <?php echo $row['destreza'] ?> (3)</p>
-                                    <p>Vitalidade: <?php echo $row['vitalidade'] ?> (4)</p>
-                                    <p>Inteligência: <?php echo $row['inteligencia'] ?> (0)</p>
-                                    <p>Sabedoria: <?php echo $row['sabedoria'] ?> (0)</p>
-                                    <p>Determinação: <?php echo $row['determinacao'] ?> (0)</p>
-                                    <p>Personalidade: <?php echo $row['personalidade'] ?></p>
-                                    <p>Lábia: <?php echo $row['labia'] ?></p>
-                                    <p>Compostura: <?php echo $row['compostura'] ?></p>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Força" aria-label="Força" aria-describedby="forca-mod" value="<?php echo $row['forca'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="forca-mod"><?php echo modCalc($row['forca']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Destreza" aria-label="Destreza" aria-describedby="destreza-mod" value="<?php echo $row['destreza'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="forca-mod"><?php echo modCalc($row['destreza']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Vitalidade" aria-label="Vitalidade" aria-describedby="vitalidade-mod" value="<?php echo $row['vitalidade'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="vitalidade-mod"><?php echo modCalc($row['vitalidade']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Inteligência" aria-label="Inteligência" aria-describedby="inteligencia-mod" value="<?php echo $row['inteligencia'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="inteligencia-mod"><?php echo modCalc($row['inteligencia']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Sabedoria" aria-label="Sabedoria" aria-describedby="sabedoria-mod" value="<?php echo $row['sabedoria'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="sabedoria-mod"><?php echo modCalc($row['sabedoria']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Determinação" aria-label="Determinação" aria-describedby="determinacao-mod" value="<?php echo $row['determinacao'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="determinacao-mod"><?php echo modCalc($row['determinacao']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Personalidade" aria-label="Personalidade" aria-describedby="personalidade-mod" value="<?php echo $row['personalidade'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="personalidade-mod"><?php echo modCalc($row['personalidade']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Lábia" aria-label="Lábia" aria-describedby="labia-mod" value="<?php echo $row['labia'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="labia-mod"><?php echo modCalc($row['labia']);?></span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control col-xs-12 col-md-4" placeholder="Compostura" aria-label="Compostura" aria-describedby="compostura-mod" value="<?php echo $row['compostura'] ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text mod" id="compostura-mod"><?php echo modCalc($row['compostura']);?></span>
+                                        </div>
+                                    </div>
                                     <hr>
+
+                                    <!-- MODAL -->
+                        <div class="modal" tabindex="-1" role="dialog" id="editar-atributos-modal">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="atributo" method="POST">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Atributos</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group form-inline">
+                                                <label for="hp" class="col-xs-4 col-md-4 col-form-label mb-3">Força:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="hp" name="hp" value="<?php echo $row['hp'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="ferimentos" class="col-xs-4 col-md-4 col-form-label mb-3">Destreza:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="ferimentos" name="ferimentos" value="<?php echo $row['ferimentos'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="exaustao" class="col-xs-4 col-md-4 col-form-label mb-3">Exaustão:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="exaustao" name="exaustao" value="<?php echo $row['exaustao'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-3">Nível:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['id_nivel'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-3">Nível:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['id_nivel'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-3">Nível:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['id_nivel'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-3">Nível:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['id_nivel'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-3">Nível:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['id_nivel'] ?>">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-3">Nível:</label>
+                                                <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['id_nivel'] ?>">
+                                            </div>
+                                            <input type="hidden" class="form-control" id="charid" name="charid" value="<?php echo $charid ?>">
+                                            <input type="hidden" class="form-control" id="userId" name="userId" value="<?php echo $userId ?>">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- MODAL -->
                                     <?php
 }
 }
 ?>
-<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editar-modal">Editar</button>
+<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editar-atributos-modal">Editar</button>
 <?php
 mysqli_close($connection);
 ?>
@@ -168,8 +288,8 @@ mysqli_close($connection);
                         <!-- /.card -->
                     </div>
                     </section>
-                    </div>
-</div>
+                </div>
+            </div>
 
 
     <!-- Footer -->

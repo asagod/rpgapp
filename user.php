@@ -60,7 +60,10 @@ if (isset($_SESSION['idLogado'])) {
         $campaigns = " e $campcount aventuras!";
         $camprows = $campcount;
     }
+
 }
+
+
 ?>
 
     <!-- Navigation -->
@@ -170,6 +173,8 @@ if (isset($_SESSION['idLogado'])) {
             <div class="row">
                 <?php if ($camprows != 0) {
     while ($camprow = mysqli_fetch_array($campquery)) {
+
+        
         ?>
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card h-100">
