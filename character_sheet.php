@@ -89,7 +89,7 @@ if ($count == 0) {
         ?>
 
                             <div class="card mt-4">
-                                <img class="card-img-top img-fluid" src="img/personagem/<?php echo $row['imagem'] ?>" alt="Imagem do personagem">
+                                <img class="card-img-top img-fluid img-sheet" src="img/personagem/<?php echo $row['imagem'] ?>" alt="Imagem do personagem">
                                 <div class="card-body">
                                     <h3 class="card-title"><?php echo $row['nome'] ?>, <?php echo $row['id_subclasse'] ?> <?php echo $row['id_raca']; ?> (Nível <?php echo $row['id_nivel']; ?> )</h3>
                                     <hr>

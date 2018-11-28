@@ -119,9 +119,9 @@ if (isset($_SESSION['idLogado'])) {
     while ($charrow = mysqli_fetch_array($charquery)) {
         ?>
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card h-100">
+                    <div class="card h-100 shadow">
                         <a href="character_sheet?id=<?php echo $charrow['charid'] ?>">
-                            <img class="card-img-top img-fluid" src="img/personagem/<?php echo $charrow['charimg'] ?>" alt="Imagem não encontrada">
+                            <img class="card-img-top img-fluid img-char" src="img/personagem/<?php echo $charrow['charimg'] ?>" alt="Imagem não encontrada">
                         </a>
                         <div class="card-body">
                             <h4 class="card-title">
@@ -148,12 +148,7 @@ if (isset($_SESSION['idLogado'])) {
 }?>
 
                 <div class="col-md-6 col-lg-4">
-                    <a class="portfolio-item d-block mx-auto" href="#modal-aventura-novo">
-                        <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
-                            <div class="portfolio-item-caption-content my-auto w-100 text-center text-white">
-                                <p>Novo Personagem</p>
-                            </div>
-                        </div>
+                    <a class="d-block mx-auto shadow" href="#modal-aventura-novo" data-toggle="modal">
                         <img class="img-fluid" src="img/new/personagem.png" alt="Carregamento da imagem falhou!">
                     </a>
                 </div>
@@ -177,9 +172,9 @@ if (isset($_SESSION['idLogado'])) {
         
         ?>
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card h-100">
+                    <div class="card h-100 shadow">
                         <a href="campaign_sheet?id=<?php echo $camprow['campid'] ?>">
-                            <img class="card-img-top .crop" src="img/aventura/<?php echo $camprow['campimg'] ?>" alt="Imagem não encontrada">
+                            <img class="card-img-top img-fluid img-camp" src="img/aventura/<?php echo $camprow['campimg'] ?>" alt="Imagem não encontrada">
                         </a>
                         <div class="card-body">
                             <h4 class="card-title">
@@ -217,32 +212,30 @@ if (isset($_SESSION['idLogado'])) {
     </section>
 
     <!-- Modal Aventura -->
-
-    <div class="portfolio-modal mfp-hide" id="modal-aventura-novo">
-        <div class="portfolio-modal-dialog bg-white">
-            <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
-                <i class="fa fa-3x fa-times"></i>
-            </a>
-            <div class="container text-center">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto">
-                        <h2 class="text-secondary text-uppercase mb-0">
-                            Digite o código da aventura!
-                        </h2>
-                        <br>
-                        <form action="sheet" method="POST">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="codigo" name="codigo"
-                                    placeholder="Código da aventura!">
+    <div class="modal" tabindex="-1" role="dialog" id="modal-aventura-novo">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="sheet" method="POST">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Aventura</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="cod" class="col-xs-12 col-md-8 col-form-label mb-1">Digite o código da aventura:</label>
+                                                <input type="text" class="form-control col-xs-12 col-md-12" id="cod" name="cod">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Cadastrar</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                            </div>
-                    </div>
-                    <button type="submit" id="cadastrar" class="btn btn-outline-primary">Criar Personagem!!!</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                        </div>
 
     <!-- Footer -->
     <footer class="footer text-center">

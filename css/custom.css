@@ -69,3 +69,21 @@
   min-width:60px;
   text-align:right;
 }
+
+.img-char{
+  height: 300px;
+	width: 400px;
+	object-fit: cover;
+}
+
+.img-camp{
+  height: 300px;
+	width: 400px;
+	object-fit: cover;
+}
+
+.img-sheet{
+  height: 600px;
+	width: 1500px;
+	object-fit: cover;
+}

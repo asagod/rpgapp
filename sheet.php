@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-if (isset($POST['codigo'])) {
+if (isset($_POST['cod'])) {
+    $cod = $_POST['cod'];
 
+}else{
+    $cod="z000";
 }
 ?>
 
@@ -52,6 +55,17 @@ if (isset($_SESSION['idLogado'])) {
     } else {
         $chars = "Você possui $charcount personagens";
         $charrows = $charcount;
+    }
+
+
+    $aventuraquery = mysqli_query($connection, "SELECT *  FROM aventura WHERE codigo = '$cod'") or die("Problema na pesquisa");
+    $aventuracount = mysqli_num_rows($aventuraquery);
+    if ($aventuracount == 0) {
+        $msg = "Esta aventura não existe";
+    } else {
+        while ($aventurarow = mysqli_fetch_array($aventuraquery)) {
+        $aventuraid = $aventurarow["id"];
+    }
     }
 }
 ?>
@@ -107,6 +121,8 @@ if (isset($_SESSION['idLogado'])) {
                         </div>
                     </div>
                 </div>
+
+                <input type="hidden" class="form-control" id="id_aventura" name="id_aventura" value="<?php echo $aventuraid ?>">
 
                 <!-- Raça -->
                 <div class="card z-depth-0 bordered">
@@ -463,7 +479,6 @@ if (isset($_SESSION['idLogado'])) {
                     <input type="hidden" name="imagem-url">
                 </div>
             </div>
-            <input type="hidden" name="id_aventura" id="id_aventura" value="1">
 
                     </div>
                 </div>
