@@ -10,7 +10,7 @@ $senha = ($salt . $miner . base64_encode($_POST['senha']) . $kripp);
 if (isset($_POST['admin'])){
 $admin=$_POST['admin'];    
 } else{
-    $admin=2;
+    $admin=1;
 }
 
 if ($data = mysqli_prepare($connection, "INSERT INTO usuario (nome,senha,admin) values(?,?,?)")) {

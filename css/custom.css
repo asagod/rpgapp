@@ -87,3 +87,15 @@
 	width: 1500px;
 	object-fit: cover;
 }
+
+.atributos {
+  min-width:130px;
+  text-align:left;
+}
+
+.forsencd{
+  border: none;
+  border-color: transparent;
+  outline: none;
+  text-align:right;
+}

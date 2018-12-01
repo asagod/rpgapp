@@ -17,7 +17,7 @@ if (isset($_POST['nome']) && isset($_POST['senha'])) {
 
             mysqli_stmt_execute($data);
 
-            mysqli_stmt_bind_result($data, $id, $nome, $senha, $admin);
+            mysqli_stmt_bind_result($data, $id, $nome, $senha, $admin, $report);
 
             mysqli_stmt_store_result($data);
 
@@ -28,10 +28,13 @@ if (isset($_POST['nome']) && isset($_POST['senha'])) {
                 $_SESSION['nomeLogado'] = $nome;
                 $_SESSION['senhaLogado'] = $senha;
                 $_SESSION['adminUsuario'] = $admin;
-                if ($admin == "1") {
+                $_SESSION['reportUsuario'] = $report;
+                if ($admin == "2") {
                     header("Location: ../admin");
-                } else {
+                } else if ($admin == "1") {
                     header("Location:../user");
+                } else {
+                    header("Location:../banned?report=$report");
                 }
 
             } else {
