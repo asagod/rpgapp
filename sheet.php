@@ -413,26 +413,31 @@
                         <div id="collapseProfissao" class="collapse" aria-labelledby="headingProfissao" data-parent="#accordion">
                             <div class="card-body">
                                 <table>
+                                    <?php
+
+
+            $profquery = mysqli_query($connection, "SELECT id, nome FROM profissao") or die("Problema na pesquisa");
+            $profcount = mysqli_num_rows($profquery);
+            if ($profcount == 0) {
+                $profs = "Ocorreu um erro! Por favor, contate o administrador!";
+                $profrows = 0;
+            } else {
+                while ($profrow = mysqli_fetch_array($profquery)) {
+                    ?>
                                     <tr>
                                         <td>
-                                            <div class="custom-control custom-radio  custom-control-inline">
-                                                <input type="radio" id="ferreiro" name="profissao" class="custom-control-input"  value="1">
-                                                <label class="custom-control-label" for="ferreiro">Ferreiro</label>
-                                            </div>
-                                        </td>
-                                        <td>
                                             <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="pescador" name="profissao" class="custom-control-input" value="2">
-                                                <label class="custom-control-label" for="pescador">Pescador</label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="lenhador" name="profissao" class="custom-control-input"  value="3">
-                                                <label class="custom-control-label" for="lenhador">Lenhador</label>
+                                                <input type="radio" id="<?php echo $profrow['nome'] ?>" name="profissao" class="custom-control-input"  value="<?php echo $profrow['id'] ?>">
+                                                <label class="custom-control-label" for="<?php echo $profrow['nome'] ?>"><?php echo $profrow['nome'] ?></label>
                                             </div>
                                         </td>
                                     </tr>
+                                        <?php
+                        }
+                    }
+                    ?>
+
+
                                 </table>
                             </div>
                         </div>
@@ -465,10 +470,10 @@
                                     <div class="url-tab panel-body">
                                         <div class="input-group">
                                             <input type="text" class="form-control hasclear" placeholder="Imagem de URL">
-                                            <div class="input-group-btn">
+                                        <div class="input-group-btn">
                                                 <button type="button" class="btn btn-default">Escolher</button>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
                                         <button type="button" class="btn btn-default">Remover</button>
                                         <!-- The URL is stored here. -->
                                         <input type="hidden" name="imagem-url">

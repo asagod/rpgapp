@@ -7,7 +7,6 @@
         header("Location: user");
     }
     ?>
-
     <head>
 
         <meta charset="utf-8">
@@ -23,6 +22,7 @@
 
         <!-- Custom fonts for this template -->
         <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -58,7 +58,7 @@
                             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="inbox">Mensagens</a>
                         </li>
                         <li class="nav-item mx-0 mx-lg-1">
-                            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="user">Voltar</a>
+                            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="user">Perfil</a>
                         </li>
                     </ul>
                 </div>
@@ -76,55 +76,107 @@
                         if (isset($_SESSION['idLogado'])) {
                             $userId = $_SESSION['idLogado'];
                         }
-                        $query = mysqli_query($connection, "SELECT personagem.id AS charid, personagem.nome AS charnome, personagem.id_atributos AS charatributos, personagem.maxhp AS maxhp, personagem.hp AS hp, personagem.exaustao AS exaustao, personagem.ferimentos AS ferimentos, personagem.imagem AS imagem, personagem.id_nivel AS charnivel, raca.nome AS charsubclasse, subclasse.nome AS charraca FROM personagem INNER JOIN subclasse ON personagem.id_subclasse = subclasse.id INNER JOIN raca ON personagem.id_raca = raca.id WHERE personagem.id = '$charid'") or die("Problema na pesquisa");
+                        $query = mysqli_query($connection, "SELECT personagem.id AS charid, personagem.id_usuario AS userid, aventura.id_mestre AS mestre, personagem.nome AS charnome, personagem.id_atributos AS charatributos, personagem.maxhp AS maxhp, personagem.hp AS hp, personagem.pontos AS pontos, personagem.maxpontos AS maxpontos, personagem.exaustao AS exaustao, personagem.ferimentos AS ferimentos, personagem.imagem AS imagem, personagem.id_nivel AS charnivel, raca.nome AS charsubclasse, subclasse.nome AS charraca FROM personagem INNER JOIN subclasse ON personagem.id_subclasse = subclasse.id INNER JOIN raca ON personagem.id_raca = raca.id INNER JOIN aventura ON aventura.id = personagem.id_aventura WHERE personagem.id = '$charid'") or die("Problema na pesquisa");
                         $count = mysqli_num_rows($query);
                         if ($count == 0) {
                             printf("<header><strong>Este produto não foi encontrado!</strong></header>");
                         } else {
                             while ($row = mysqli_fetch_array($query)) {
+                                if ($userId != $row['userid']) {
+                                    if ($row['mestre'] != $userId) {
+                                        header("Location: code/404");
+                                    } else {
+                                    }
+                                } else {
+                                }
                                 ?>
 
                                 <div class="card">
                                     <img class="card-img-top img-fluid img-sheet" src="img/personagem/<?php echo $row['imagem'] ?>" alt="Imagem do personagem">
                                     <div class="card-body">
-                                        <h3 class="card-title"><?php echo $row['charnome'] ?>, <?php echo $row['charsubclasse'] ?> <?php echo $row['charraca']; ?> (Nível <?php echo $row['charnivel']; ?> )</h3>
+                                    <form action="code/edit_char.php" method="POST">
+                                        <h3 class="card-title"><?php echo $row['charnome'] ?>, <?php echo $row['charsubclasse'] ?> <?php echo $row['charraca']; ?> (Nível <?php echo $row['charnivel']; ?>)</h3>
                                         <hr>
-                                        <div class="input-group mb-3">
+                                        <div class="form-inline">
+                                        <div class="input-group mb-3 col-xs-12 col-md-6 lados">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text atributos">Pontos de Vida</span>
                                             </div>
-                                            <input type="text" class="form-control col-xs-6 col-md-2" name="forca" id="forca" placeholder="Força" aria-label="Força" aria-describedby="forca-mod" value="<?php echo $row['hp'] ?>" disabled>
+                                            <input type="text" class="form-control" name="hp" id="hp" placeholder="HP" aria-label="HP" aria-describedby="hp-max" value="<?php echo $row['hp'] ?>" disabled>
                                             <div class="input-group-append">
-                                                <span class="input-group-text mod" id="forca-mod"><?php echo $row['maxhp']; ?></span>
+                                                <span class="input-group-text mod" id="hp-max"><?php echo $row['maxhp']; ?></span>
                                             </div>
                                         </div>
-                                        <div class="input-group mb-3">
+                                        <div class="input-group mb-3 col-xs-12 col-md-6 lados">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text atributos">Pontos de Classe</span>
+                                            </div>
+                                            <input type="text" class="form-control" name="pontos" id="pontos" placeholder="Pontos" aria-label="Pontos" aria-describedby="pontos-max" value="<?php echo $row['pontos'] ?>" disabled>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text mod" id="pontos-max"><?php echo $row['pontos']; ?></span>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div class="form-inline">
+                                        <div class="input-group mb-3 col-xs-12 col-md-6 lados">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text atributos">Ferimentos</span>
                                             </div>
-                                            <input type="number" class="form-control  col-xs-6 col-md-2" name="destreza" id="destreza" placeholder="Destreza" aria-label="Destreza" aria-describedby="destreza-mod" value="<?php echo $row['ferimentos'] ?>" min="0" max="3" disabled>
+                                            <input type="number" class="form-control" name="ferimentos" id="ferimentos" placeholder="Ferimentos" aria-label="Ferimentos" aria-describedby="feimentos-max" value="<?php echo $row['ferimentos'] ?>" min="0" max="3" disabled>
                                             <div class="input-group-append">
-                                                <span class="input-group-text mod" id="forca-mod">3</span>
+                                                <span class="input-group-text mod" id="ferimentos-max">3</span>
                                             </div>
                                         </div>
-                                        <div class="input-group mb-3">
+                                        <div class="input-group mb-3 col-xs-12 col-md-6 lados">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text atributos">Exaustão</span>
                                             </div>
-                                            <input type="text" class="form-control col-xs-6 col-md-2" name="vitalidade" id="vitalidade" placeholder="Vitalidade" aria-label="Vitalidade" aria-describedby="vitalidade-mod" value="<?php echo $row['exaustao'] ?>" min="0" max="10" disabled>
+                                            <input type="text" class="form-control" name="exaustao" id="exaustao" placeholder="Exaustão" aria-label="Exaustão" aria-describedby="exaustao-max" value="<?php echo $row['exaustao'] ?>" min="0" max="10" disabled>
                                             <div class="input-group-append">
-                                                <span class="input-group-text mod" id="vitalidade-mod">10</span>
+                                                <span class="input-group-text mod" id="exaustao-max">10</span>
                                             </div>
                                         </div>
+                                        </div>
                                         <hr>
-                                        <button type="button" data-target="#editar-modal" data-toggle="modal" class="btn btn-secondary">Editar</button>
+                                        <div class="btn-group">
+                                        <button type="button" class="btn btn-secondary"  id="editar-main">Editar</button>
+                                        <input type="hidden" name="charid" value="<?php echo $row['charid'] ?>">
+                                        <input type="submit" class="submit_on_enter" hidden>
+                                        </form>
+    
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                                <i class="fa fa-redo" aria-hidden="true"></i><span class="caret"></span>
+                                            </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li><a href="#">Pontos de Vida</a></li>
+                                                    <li><a href="#">Pontos de Classe</a></li>
+                                                    <li><a href="#">Exaustão</a></li>
+                                                    <li><a href="#">Ferimentos</a></li>
+                                                    <li><a href="#">Todos</a></li>
+                                                </ul>
+  	                                    </div>
+                                            <div class="btn-group">
+                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                             <i class="fa fa-cog" aria-hidden="true"></i> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="code/lvl_up.php?<?php echo 'id=' . urlencode($charid) . '&nivel=' . urlencode($row['charnivel']) ?>" onclick="return confirm('Tem certeza que deseja aumentar o nível do personagem?')">Subir de Nível</a></li>
+                                                <li><a href="#modal-nome" data-toggle="modal">Editar Nome</a></li>
+                                                <li><a href="#modal-aventura" data-toggle="modal">Editar Aventura</a></li>
+                                                <li class="divider"><hr></li>
+                                                <li><a href="code/remove_char.php?id=<?php echo $charid ?>" onclick="return confirm('Tem certeza que deseja remover este personagem da aventura atual?')">Remover da Aventura</a></li>
+                                                <li><a href="code/disable_char.php?id=<?php echo $charid ?>" onclick="return confirm('Tem certeza que deseja excluir este personagem?')">Excluir Personagem</a></li>
+                                            </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- MODAL -->
-                                <div class="modal" tabindex="-1" role="dialog" id="editar-modal">
+                                <!-- MODAL NOME -->
+                                <div class="modal" tabindex="-1" role="dialog" id="modal-nome">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
-                                            <form action="edit_atributo" method="POST">
+                                            <form action="code/edit_nome" method="POST">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">Personagem</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -133,20 +185,36 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="form-group form-inline">
-                                                        <label for="hp" class="col-xs-4 col-md-4 col-form-label mb-1">Pontos de Vida:</label>
-                                                        <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="hp" name="hp" value="<?php echo $row['hp'] ?>">
+                                                        <label for="nome" class="col-xs-4 col-md-4 col-form-label mb-1">Novo Nome:</label>
+                                                        <input type="text" class="form-control mb-3 col-xs-12 col-md-7" id="nome" name="nome">
                                                     </div>
+                                                    <input type="hidden" class="form-control" id="charid" name="charid" value="<?php echo $charid ?>">
+                                                    <input type="hidden" class="form-control" id="userId" name="userId" value="<?php echo $userId ?>">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- MODAL -->
+                                <!-- MODAL AVENTURA -->
+                                <div class="modal" tabindex="-1" role="dialog" id="modal-aventura">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <form action="code/edit_aventura" method="POST">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Personagem</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
                                                     <div class="form-group form-inline">
-                                                        <label for="ferimentos" class="col-xs-4 col-md-4 col-form-label mb-1">Ferimentos:</label>
-                                                        <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="ferimentos" name="ferimentos" value="<?php echo $row['ferimentos'] ?>">
-                                                    </div>
-                                                    <div class="form-group form-inline">
-                                                        <label for="exaustao" class="col-xs-4 col-md-4 col-form-label mb-1">Exaustão:</label>
-                                                        <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="exaustao" name="exaustao" value="<?php echo $row['exaustao'] ?>">
-                                                    </div>
-                                                    <div class="form-group form-inline">
-                                                        <label for="nivel" class="col-xs-4 col-md-4 col-form-label mb-1">Nível:</label>
-                                                        <input type="number" class="form-control mb-3 col-xs-12 col-md-7" id="nivel" name="nivel" value="<?php echo $row['charnivel'] ?>">
+                                                        <label for="aventura" class="col-xs-4 col-md-4 col-form-label mb-1">Digite o código da aventura:</label>
+                                                        <input type="text" class="form-control mb-3 col-xs-12 col-md-7" id="aventura" name="aventura">
                                                     </div>
                                                     <input type="hidden" class="form-control" id="charid" name="charid" value="<?php echo $charid ?>">
                                                     <input type="hidden" class="form-control" id="userId" name="userId" value="<?php echo $userId ?>">
@@ -276,10 +344,14 @@
                         </section>
                         <!-- /.card -->
                         <section class="portfolio" id="pericias">
-                            <div>
                                 <?php
-                                $query3 = mysqli_query($connection, "SELECT atributos.id AS id, atributos.forca AS forca, atributos.destreza AS destreza, atributos.vitalidade AS vitalidade, atributos.inteligencia AS inteligencia, atributos.sabedoria AS sabedoria, atributos.determinacao AS determinacao, atributos.personalidade AS personalidade, atributos.labia AS labia, atributos.compostura AS compostura FROM atributos "
-                                        . "INNER JOIN personagem ON personagem.id_atributos = atributos.id WHERE personagem.id = '$charid' LIMIT 1") or die("Problema na pesquisa");
+                                $query3 = mysqli_query($connection, "SELECT pericias.id AS pericia, atributos.id AS atributo, pericias.corrida AS corrida, pericias.escalada AS escalada, pericias.montaria AS montaria, pericias.natacao AS natacao, pericias.arrombamento AS arrombamento, "
+                                . "pericias.cadeados AS cadeados, pericias.armadilhas AS armadilhas, pericias.esconder AS esconder, pericias.esgueirar AS esgueirar, pericias.equilibrio AS equilibrio, pericias.roubar AS roubar, pericias.truque AS truque, pericias.objetos AS objetos, "
+                                . "pericias.arcano AS arcano, pericias.historico AS historico, pericias.linguistico AS linguistico, pericias.medico AS medico, pericias.c_natural AS c_natural, pericias.religioso AS religioso, pericias.identificacao AS identificacao, pericias.investigacao AS investigacao, "
+                                . "pericias.intuicao AS intuicao, pericias.percepcao AS percepcao, pericias.rastreamento AS rastreamento, pericias.sobrevivencia AS sobrevivencia, pericias.lideranca AS lideranca, pericias.diplomacia AS diplomacia, pericias.inspiracao AS inspiracao, pericias.intimidacao AS intimidacao, "
+                                . "pericias.persuasao AS persuasao, pericias.adestramento AS adestramento, pericias.atuacao AS atuacao, pericias.blefe AS blefe, pericias.disfarce AS disfarce, pericias.enganacao AS enganacao, "
+                                . "atributos.id AS id, atributos.forca AS forca, atributos.destreza AS destreza, atributos.vitalidade AS vitalidade, atributos.inteligencia AS inteligencia, atributos.sabedoria AS sabedoria, atributos.determinacao AS determinacao, atributos.personalidade AS personalidade, atributos.labia AS labia, atributos.compostura AS compostura FROM pericias "
+                                . "INNER JOIN personagem ON personagem.id_pericias = pericias.id INNER JOIN atributos ON atributos.id = personagem.id_atributos WHERE personagem.id = '$charid' LIMIT 1") or die("Problema na pesquisa");
                                 $count3 = mysqli_num_rows($query3);
                                 if ($count3 == 0) {
                                     printf("<header><strong>Nenhum resultado encontrado!</strong></header><hr>");
@@ -287,7 +359,8 @@
                                     while ($row = mysqli_fetch_array($query3)) {
                                         ?>
                                         <form action="code/edit_atributos" method="POST">
-                                            <table class="table table-responsive table-sm">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-striped">
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Perícia</th>
@@ -298,181 +371,182 @@
                                                 <tbody>
                                                     <tr>
                                                         <th scope="row">Corrida</th>
-                                                        <td>Otto</td>
-                                                        <td>@mdo</td>
+                                                        <td><?php echo $row['corrida'] ?></td>
+                                                        <td><?php echo modCalc($row['forca']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Escalada</th>
-                                                        <td>Thornton</td>
-                                                        <td>@fat</td>
+                                                        <td><?php echo $row['escalada'] ?></td>
+                                                        <td><?php echo modCalc($row['forca']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Montaria</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['montaria'] ?></td>
+                                                        <td><?php echo modCalc($row['forca']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Natação</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['natacao'] ?></td>
+                                                        <td><?php echo modCalc($row['forca']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Arrombamento</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['arrombamento'] ?></td>
+                                                        <td><?php echo modCalc($row['forca']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Abrir Cadeados</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['cadeados'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Desarmar Armadilhas</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['armadilhas'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Esconder-se</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['esconder'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Esgueirar-se</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['esgueirar'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Equilíbrio</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['equilibrio'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Roubar</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['roubar'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Truque de Mãos</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['truque'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Usar Objeto</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['objetos'] ?></td>
+                                                        <td><?php echo modCalc($row['destreza']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Conhecimento Arcano</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['arcano'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Conhecimento Histórico</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['historico'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Conhecimento Linguístico</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['linguistico'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Conhecimento Médico</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['medico'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Conhecimento Natural</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['c_natural'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Conhecimento Religioso</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['religioso'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Identificação</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['identificacao'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Investigação</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['investigacao'] ?></td>
+                                                        <td><?php echo modCalc($row['inteligencia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Intuição</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['intuicao'] ?></td>
+                                                        <td><?php echo modCalc($row['sabedoria']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Percepção</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['percepcao'] ?></td>
+                                                        <td><?php echo modCalc($row['sabedoria']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Rastreamento</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['rastreamento'] ?></td>
+                                                        <td><?php echo modCalc($row['sabedoria']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Sobrevivência</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['sobrevivencia'] ?></td>
+                                                        <td><?php echo modCalc($row['sabedoria']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Liderança</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['lideranca'] ?></td>
+                                                        <td><?php echo modCalc($row['personalidade']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Diplomacia</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['diplomacia'] ?></td>
+                                                        <td><?php echo modCalc($row['personalidade']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Inspiração</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['inspiracao'] ?></td>
+                                                        <td><?php echo modCalc($row['personalidade']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Intimidação</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['intimidacao'] ?></td>
+                                                        <td><?php echo modCalc($row['personalidade']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Persuasão</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['persuasao'] ?></td>
+                                                        <td><?php echo modCalc($row['personalidade']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Adestramento</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['adestramento'] ?></td>
+                                                        <td><?php echo modCalc($row['labia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Atuação</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['atuacao'] ?></td>
+                                                        <td><?php echo modCalc($row['labia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Blefe</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['blefe'] ?></td>
+                                                        <td><?php echo modCalc($row['labia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Disfarce</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['disfarce'] ?></td>
+                                                        <td><?php echo modCalc($row['labia']); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Enganação</th>
-                                                        <td>the Bird</td>
-                                                        <td>@twitter</td>
+                                                        <td><?php echo $row['enganacao'] ?></td>
+                                                        <td><?php echo modCalc($row['labia']); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                    </div>
 
                                             <input type="hidden" name="atributo" id="atributo" value="<?php echo $row['id'] ?>">
                                             <input type="hidden" name="id" id="id" value="<?php echo $charid ?>">
@@ -481,13 +555,12 @@
                                         }
                                     }
                                     ?>
-                                    <button type="button" class="btn btn-secondary" id="editar">Editar</button>
+                                    <button type="button" class="btn btn-secondary" id="editar2">Editar</button>
                                     <input type="submit" class="submit_on_enter" hidden>
                                 </form>
                                 <?php
                                 mysqli_close($connection);
                                 ?>
-                            </div>
                         </section>
 
 
@@ -572,7 +645,7 @@
         <script src="js/bootstrap-imageupload.js"></script>
 
         <script>
-            const itemForca = document.getElementById("forca")
+                    const itemForca = document.getElementById("forca")
                     const itemDestreza = document.getElementById('destreza')
                     const itemVitalidade = document.getElementById('vitalidade')
                     const itemInteligencia = document.getElementById('inteligencia')
@@ -582,8 +655,9 @@
                     const itemLabia = document.getElementById('labia')
                     const itemCompostura = document.getElementById('compostura')
 
-                    document.getElementById("editar").addEventListener('click', (e) = > {
-            itemForca.removeAttribute("disabled")
+                    document.getElementById("editar").addEventListener('click',(e)=>{
+
+                    itemForca.removeAttribute("disabled")
                     itemDestreza.removeAttribute("disabled")
                     itemVitalidade.removeAttribute("disabled")
                     itemInteligencia.removeAttribute("disabled")
@@ -592,6 +666,21 @@
                     itemPersonalidade.removeAttribute("disabled")
                     itemLabia.removeAttribute("disabled")
                     itemCompostura.removeAttribute("disabled")
+            })
+
+                    const itemHP = document.getElementById("hp")
+                    const itemMaxHP = document.getElementById('hp-max')
+                    const itemPontos = document.getElementById('pontos')
+                    const itemExaustao = document.getElementById('exaustao')
+                    const itemFerimentos = document.getElementById('ferimentos')
+
+                    document.getElementById("editar-main").addEventListener('click',(e)=>{
+
+                    itemHP.removeAttribute("disabled")
+                    itemMaxHP.removeAttribute("disabled")
+                    itemPontos.removeAttribute("disabled")
+                    itemExaustao.removeAttribute("disabled")
+                    itemFerimentos.removeAttribute("disabled")
             })
 
 

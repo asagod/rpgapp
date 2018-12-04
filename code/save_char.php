@@ -61,10 +61,30 @@ $altura = $_POST['altura'];
 $peso = $_POST['peso'];
 $classe_social = $_POST['classe_social'];
 $profissao = $_POST['profissao'];
-$aventura = $_POST['id_aventura'];
+(isset($_POST['id_aventura'])) ? $aventura = $_POST['id_aventura'] : $aventura = "000";
 $valortemporario = '1';
 $imagem = $newfilename;
 $atributo = round(microtime(true));
+$pericia = $atributo;
+$_neg = 'Não';
+$_pos = 'Sim';
+$_1 = 'I';
+$_2 = 'II';
+$_3 = 'III';
+$_4 = 'IV';
+$_5 = 'V';
+
+$profquery = mysqli_query($connection, "SELECT * FROM profissao WHERE id='$profissao'") or die("Problema na pesquisa");
+$profcount = mysqli_num_rows($profquery);
+if ($profcount == 0) {
+    $msg = "Erro!";
+} else {
+    while ($profrow = mysqli_fetch_array($profquery)) {
+        $pericia1 = $profrow['pericia1'];
+        $pericia2 = $profrow['pericia2'];
+        $pericia3 = $profrow['pericia3'];
+    }
+}
 
 if ($sexo == 1) {
     $sexfisico = 10;
@@ -104,12 +124,28 @@ if ($racacount == 0) {
     }
 }
 
+if ($datatreatment0 = mysqli_prepare($connection, "INSERT INTO pericias (id,$pericia1,$pericia2,$pericia3) values(?,?,?,?)")) {
+    mysqli_stmt_bind_param($datatreatment0, "isss", $atributo, $_3, $_2, $_1);
+
+    if (mysqli_stmt_execute($datatreatment0)) {
+        if (mysqli_stmt_affected_rows($datatreatment0) > 0) {
+        } else {
+            echo mysqli_error($connection);
+            echo "Erro 1! Raça não gravada!";
+        }
+    } else {
+        echo mysqli_error($connection);
+    }
+    mysqli_stmt_close($datatreatment0);
+} else {
+    echo "Erro 2! Raça não gravada!";
+}
+
 if ($datatreatment1 = mysqli_prepare($connection, "INSERT INTO atributos (id,forca,destreza,vitalidade,inteligencia,sabedoria,determinacao,personalidade,labia,compostura) values(?,?,?,?,?,?,?,?,?,?)")) {
-    mysqli_stmt_bind_param($datatreatment1, "iddddddddd", $atributo, $str, $dex, $vit, $int, $sab, $det, $per, $lab, $com);
+    mysqli_stmt_bind_param($datatreatment1, "iddddddddd", $pericia, $str, $dex, $vit, $int, $sab, $det, $per, $lab, $com);
 
     if (mysqli_stmt_execute($datatreatment1)) {
         if (mysqli_stmt_affected_rows($datatreatment1) > 0) {
-            header("Location:../user");
         } else {
             echo mysqli_error($connection);
             echo "Erro 1! Raça não gravada!";
@@ -122,8 +158,8 @@ if ($datatreatment1 = mysqli_prepare($connection, "INSERT INTO atributos (id,for
     echo "Erro 2! Raça não gravada!";
 }
 
-if ($datatreatment2 = mysqli_prepare($connection, "INSERT INTO personagem (nome,id_usuario,id_raca,id_classe,id_subclasse,id_sexo,id_idade,id_altura,id_peso,id_classe_social,id_profissao,id_aventura,imagem,id_atributos,id_pericias,id_equipamento) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
-    mysqli_stmt_bind_param($datatreatment2, "siiiiiiiiiiisiii", $nome, $user, $raca, $classe, $subclasse, $sexo, $idade, $altura, $peso, $classe_social, $profissao, $aventura, $imagem, $atributo, $valortemporario, $valortemporario);
+if ($datatreatment2 = mysqli_prepare($connection, "INSERT INTO personagem (nome,id_usuario,id_raca,id_classe,id_subclasse,id_sexo,id_idade,id_altura,id_peso,id_classe_social,id_profissao,id_aventura,imagem,id_atributos,id_pericias,id_equipamento,hp,maxhp) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+    mysqli_stmt_bind_param($datatreatment2, "siiiiiiiiiiisiiidd", $nome, $user, $raca, $classe, $subclasse, $sexo, $idade, $altura, $peso, $classe_social, $profissao, $aventura, $imagem, $atributo, $pericia, $valortemporario, $vit, $vit );
 
     if (mysqli_stmt_execute($datatreatment2)) {
         if (mysqli_stmt_affected_rows($datatreatment2) > 0) {

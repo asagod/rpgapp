@@ -50,3 +50,18 @@ function modCalc($atributo) {
     echo $mod;
 
 }
+
+
+function banCheck($acesso) {
+    switch ($acesso){
+        case ($acesso==1): $ban="Usuário";
+        return $ban;
+        case ($acesso==2): $ban="Administrador";
+        return $ban;
+        default: $ban="Banido";
+        return $ban;
+    }
+
+    echo $ban;
+
+}

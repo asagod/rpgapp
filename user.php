@@ -35,6 +35,7 @@
         if (isset($_SESSION['idLogado'])) {
             $id = $_SESSION['idLogado'];
             $nome = $_SESSION['nomeLogado'];
+            $admin = $_SESSION['adminUsuario'];
 
 
 
@@ -51,16 +52,16 @@
                 $charrows = $charcount;
             }
 
-            $campquery = mysqli_query($connection, "SELECT usuario.id, aventura.id AS campid, aventura.nome AS campnome, aventura.imagem AS campimg, aventura.pontos AS camppontos FROM usuario INNER JOIN aventura ON aventura.id_mestre = usuario.id WHERE usuario.id = '$id'") or die("Problema na pesquisa");
+            $campquery = mysqli_query($connection, "SELECT usuario.id, aventura.id AS campid, aventura.nome AS campnome, aventura.imagem AS campimg, aventura.pontos AS camppontos, aventura.codigo AS codigo FROM usuario INNER JOIN aventura ON aventura.id_mestre = usuario.id WHERE usuario.id = '$id'") or die("Problema na pesquisa");
             $campcount = mysqli_num_rows($campquery);
             if ($campcount == 0) {
                 $campaigns = "!";
                 $camprows = 0;
             } else if ($campcount == 1) {
-                $campaigns = " e $campcount aventura!";
+                $campaigns = " e possui $campcount aventura!";
                 $camprows = $campcount;
             } else {
-                $campaigns = " e $campcount aventuras!";
+                $campaigns = " e possui $campcount aventuras!";
                 $camprows = $campcount;
             }
         }
@@ -85,7 +86,7 @@
                             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#aventuras">Aventuras</a>
                         </li>
                         <li class="nav-item mx-0 mx-lg-1">
-                            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="inbox">Mensagens</a>
+                            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="<?php echo ($admin!="2") ? 'inbox' : 'admin/index'; ?>"><?php echo ($admin!="2") ? 'Mensagens' : 'Admin'; ?></a>
                         </li>
                         <li class="nav-item mx-0 mx-lg-1">
                             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="code/logout.php">Sair</a>
@@ -161,14 +162,12 @@ if ($charrows != 0) {
             </div>
         </section>
 
-        <hr>
-
         <!-- Adventure Grid Section -->
         <br>
-        <section class="portfolio" id="aventuras">
+        <section class="bg-primary text-white mb-0" id="aventuras">
             <div class="container">
-                <h2 class="text-center text-uppercase text-secondary mb-0">Aventuras</h2>
-                <hr class="star-dark mb-5">
+                <h2 class="text-center text-uppercase text-white mb-0">Aventuras</h2>
+                <hr class="star-light mb-5">
 
                 <div class="row">
                     <?php
@@ -176,24 +175,19 @@ if ($charrows != 0) {
                         while ($camprow = mysqli_fetch_array($campquery)) {
                             ?>
                             <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="card h-100 shadow">
-                                    <a href="campaign_sheet?id=<?php echo $camprow['campid'] ?>">
+                                <div class="card h-100 shadow bg-secondary">
+                                    <a href="campaign_sheet?key=<?php echo (base64_encode($camprow['campid'])); ?>">
                                         <img class="card-img-top img-fluid img-camp" src="img/aventura/<?php echo $camprow['campimg'] ?>" alt="Imagem não encontrada">
                                     </a>
                                     <div class="card-body">
                                         <h4 class="card-title">
-                                            <a href="campaign.php?id=<?php echo $camprow['campid'] ?>">
+                                            <a class="text-white" href="campaign_sheet?key=<?php echo (base64_encode($camprow['campid'])); ?>">
                                                 <?php echo $camprow['campnome']; ?>
                                             </a>
                                         </h4>
-                                        <h5>
-                                            <?php echo $camprow['camppontos']; ?>
-                                        </h5>
                                     </div>
-                                    <div class="card-footer">
-                                        <small class="text-muted">Personagens:
-                                            <?php echo $camprow['camppontos'] ?>
-                                        </small>
+                                    <div class="card-footer text-white">
+                                        <?php echo $camprow['codigo']; ?>
                                     </div>
                                 </div>
                             </div>
@@ -241,7 +235,7 @@ if ($charrows != 0) {
         <div class="modal" tabindex="-1" role="dialog" id="modal-aventura">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form action="sheet" method="POST">
+                    <form action="code/save_aventura.php" method="POST" enctype="multipart/form-data">
                         <div class="modal-header">
                             <h5 class="modal-title">Aventura</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -250,10 +244,27 @@ if ($charrows != 0) {
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="nome" class="col-xs-12 col-md-8 col-form-label mb-1">Digite um nome para a aventura:</label>
-                                <input type="text" class="form-control col-xs-12 col-md-12" id="nome" name="nome">
-                            </div>
-                        </div>                                        
+                                <label for="aventuranome" class="col-xs-12 col-md-8 col-form-label mb-1">Digite um nome para a aventura:</label>
+                                <input type="text" class="form-control col-xs-12 col-md-12" id="aventuranome" name="aventuranome">
+                                <label for="pontos" class="col-xs-12 col-md-8 col-form-label mb-1">Pontuação:</label>
+                                <input type="number" class="form-control col-xs-12 col-md-12" name="pontos">
+                                <!-- Imagem -->
+                                <label for="imagem" class="col-xs-12 col-md-8 col-form-label mb-1">Escolha uma imagem:</label>
+                                <!-- bootstrap-imageupload. -->
+                                <div class="imageupload panel panel-default">
+                                    <div class="file-tab panel-body">
+                                        <label class="btn btn-outline-secondary btn-file">
+                                            <span>Pesquisar</span>
+                                            <!-- The file is stored here. -->
+                                            <input type="file" name="imagem" id="imagem">
+                                        </label>
+                                    </div>
+                                        <button type="button" class="btn btn-default">Remover</button>
+                                        <!-- The URL is stored here. -->
+                                        <input type="hidden" name="imagem-url">
+                                </div>
+                                </div>
+                            </div>                                       
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary">Cadastrar</button>

@@ -10,3 +10,8 @@ if ($textcount == 0) {
 }
 
 ?>
+
+
+
+
+pericias.id AS pericia, atributos.id AS id, atributos.forca AS forca, atributos.destreza AS destreza, atributos.vitalidade AS vitalidade, atributos.inteligencia AS inteligencia, atributos.sabedoria AS sabedoria, atributos.determinacao AS determinacao, atributos.personalidade AS personalidade, atributos.labia AS labia, atributos.compostura AS compostura

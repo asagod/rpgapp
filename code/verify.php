@@ -30,7 +30,7 @@ if (isset($_POST['nome']) && isset($_POST['senha'])) {
                 $_SESSION['adminUsuario'] = $admin;
                 $_SESSION['reportUsuario'] = $report;
                 if ($admin == "2") {
-                    header("Location: ../admin");
+                    header("Location: ../admin/index");
                 } else if ($admin == "1") {
                     header("Location:../user");
                 } else {
